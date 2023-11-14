@@ -1,0 +1,15 @@
+.box {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: black;
+}
+
+.bubble-one {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: red;
+}
