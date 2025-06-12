@@ -1,23 +1,21 @@
 # 🌊 Ocean Effect
 
-A modern web application that creates stunning ocean-like visual effects using Framer Motion and Joy UI.
+A modern web application that creates stunning ocean-like visual effects using HTML5 Canvas and React.
 
 ## ✨ Features
 
-- Beautiful ocean wave animations
-- Responsive design
-- Interactive UI elements
-- Smooth transitions and effects
-- Modern and clean interface
+- Beautiful ocean wave animations with dynamic ripple effects
+- Interactive surface rings and particle effects
+- Responsive design that works on all devices
+- Touch and mouse interaction support
+- High-performance canvas rendering
+- Smooth animations with optimized frame rates
 
 ## 📸 Preview
 
-  ![ocean](https://github.com/user-attachments/assets/d7d94087-c939-4475-ac92-89e99cdc0c8d)
+![ocean](https://github.com/user-attachments/assets/d7d94087-c939-4475-ac92-89e99cdc0c8d)
 
-
-  ![ocean 2](https://github.com/user-attachments/assets/8f9c7bed-4620-4aca-9e08-e0bc8c4fb968)
-
-
+![ocean 2](https://github.com/user-attachments/assets/8f9c7bed-4620-4aca-9e08-e0bc8c4fb968)
 
 ## 🎮 Live Demo
 
@@ -29,21 +27,24 @@ Experience the beautiful ocean animations in your browser! Click the link above 
 
 - **React** - Frontend framework for building the user interface
 - **TypeScript** - For type safety and better development experience
-- **Canvas API** - For high-performance 2D graphics rendering
+- **HTML5 Canvas API** - For high-performance 2D graphics rendering
   - Custom ocean wave animations
-  - Interactive ripple effects
-  - Dynamic surface rings
+  - Interactive ripple effects with movement-based fading
+  - Dynamic surface rings with randomized spawning
+  - Gradient-based ocean coloring
 - **React Hooks**
   - `useRef` - For managing canvas references and animation frames
   - `useEffect` - For handling animations, event listeners, and cleanup
 - **Performance Optimizations**
   - RequestAnimationFrame for smooth animations
-  - Throttled ripple generation
+  - Throttled ripple generation (RIPPLE_SPAWN_THROTTLE)
   - Efficient canvas rendering techniques
+  - Memory management with proper cleanup
 - **Responsive Design**
   - Dynamic canvas resizing
   - Touch and mouse event support
   - Adaptive layout for all screen sizes
+  - Window resize handling
 
 ## 🚀 Getting Started
 
@@ -99,11 +100,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Helpful Links
 
-[![framer motion](https://cdn.iconscout.com/icon/free/png-256/free-framer-logo-3609961-3014601.png?f=webp)](https://www.framer.com/motion/)
-[![joyui](https://github.com/tandpfun/skill-icons/raw/main/icons/MaterialUI-Dark.svg)](https://mui.com/joy-ui/getting-started/)
+- [HTML5 Canvas API Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+- [React Documentation](https://reactjs.org/)
+- [TypeScript Documentation](https://www.typescriptlang.org/)
 
 ## 📧 Contact
 
 Akseli Palmer - [LinkedIn](https://www.linkedin.com/in/akselipalmer/)
-
-Project Link: [https://github.com/yourusername/ocean-effect](https://github.com/yourusername/ocean-effect)
