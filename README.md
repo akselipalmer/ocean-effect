@@ -12,17 +12,12 @@ A modern web application that creates stunning ocean-like visual effects using F
 
 ## 📸 Preview
 
-<div align="center">
-  <img src="preview/desktop-view.png" alt="Desktop View" width="800"/>
-  <br/>
-  <em>Desktop view of Ocean Effect</em>
-</div>
+  ![ocean](https://github.com/user-attachments/assets/d7d94087-c939-4475-ac92-89e99cdc0c8d)
 
-<div align="center">
-  <img src="preview/mobile-view.png" alt="Mobile View" width="400"/>
-  <br/>
-  <em>Mobile view of Ocean Effect</em>
-</div>
+
+  ![ocean 2](https://github.com/user-attachments/assets/8f9c7bed-4620-4aca-9e08-e0bc8c4fb968)
+
+
 
 ## 🎮 Live Demo
 
