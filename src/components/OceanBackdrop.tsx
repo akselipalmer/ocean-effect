@@ -7,6 +7,7 @@ const RIPPLE_LIFETIME = 1000; // ms
 const RIPPLE_MAX_RADIUS = 60;
 const RIPPLE_MIN_RADIUS = 18;
 const RIPPLE_LINE_WIDTH = 2.5;
+const RIPPLE_SPAWN_THROTTLE = 2; // Only allow 1 ripple every 2 mousemoves
 
 // Surface ring constants (replacing bubbles)
 const RING_COLOR = "rgba(255,255,255,0.7)";
@@ -26,6 +27,7 @@ interface Ripple {
   y: number;
   start: number;
   points: Point[];
+  movementAngle: number;
 }
 
 interface SurfaceRing {
@@ -91,6 +93,8 @@ const Ocean = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const mouseMoveCount = useRef(0);
+  const prevMouse = useRef<{ x: number; y: number } | null>(null);
 
   // Resize canvas to fill window
   useEffect(() => {
@@ -112,17 +116,26 @@ const Ocean = () => {
   // Mouse move handler
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      mouseMoveCount.current++;
+      if (mouseMoveCount.current % RIPPLE_SPAWN_THROTTLE !== 0) return;
       const canvas = canvasRef.current;
       if (!canvas) return;
-
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
+      let movementAngle = 0;
+      if (prevMouse.current) {
+        const dx = x - prevMouse.current.x;
+        const dy = y - prevMouse.current.y;
+        movementAngle = Math.atan2(dy, dx);
+      }
+      prevMouse.current = { x, y };
       ripples.current.push({
         x,
         y,
         start: performance.now(),
         points: randomWobble(RIPPLE_MIN_RADIUS),
+        movementAngle,
       });
     };
     const canvas = canvasRef.current;
@@ -200,16 +213,17 @@ const Ocean = () => {
         x: point.x * (radius / RIPPLE_MIN_RADIUS),
         y: point.y * (radius / RIPPLE_MIN_RADIUS),
       }));
-      // Find the angle of the mouse movement (from previous ripple if available)
-      // For simplicity, we'll fade the segment opposite the first point
       const total = points.length;
       for (let i = 0; i < total; i++) {
         const p1 = points[i];
         const p2 = points[(i + 1) % total];
         // Angle from center for this segment
         const angle = (i / total) * Math.PI * 2;
-        // Fade: 1 at angle=0, min at angle=PI (opposite side)
-        const fade = 0.5 + 0.5 * Math.cos(angle); // 1 to 0
+        // Angle difference from movement direction
+        let diff = Math.abs(angle - ripple.movementAngle);
+        diff = Math.min(diff, Math.abs(Math.PI * 2 - diff));
+        // Fade: max at 0 and PI, min at PI/2 and 3PI/2
+        const fade = 0.5 + 0.5 * Math.cos(diff); // 1 at 0/PI, 0 at PI/2/3PI/2
         ctx.globalAlpha = alpha * 0.7 * fade;
         ctx.beginPath();
         ctx.moveTo(ripple.x + p1.x, ripple.y + p1.y);
