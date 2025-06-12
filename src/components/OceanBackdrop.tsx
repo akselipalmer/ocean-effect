@@ -8,6 +8,14 @@ const RIPPLE_MAX_RADIUS = 60;
 const RIPPLE_MIN_RADIUS = 18;
 const RIPPLE_LINE_WIDTH = 2.5;
 
+// Bubble constants
+const BUBBLE_COLOR = "rgba(255,255,255,0.6)";
+const BUBBLE_MIN_RADIUS = 4;
+const BUBBLE_MAX_RADIUS = 12;
+const BUBBLE_SPAWN_RATE = 0.1;
+const BUBBLE_LIFETIME = 6000;
+const BUBBLE_RISE_SPEED = 0.8;
+
 interface Point {
   x: number;
   y: number;
@@ -18,6 +26,14 @@ interface Ripple {
   y: number;
   start: number;
   points: Point[];
+}
+
+interface Bubble {
+  x: number;
+  y: number;
+  radius: number;
+  start: number;
+  speed: number;
 }
 
 interface Size {
@@ -43,10 +59,37 @@ function randomWobble(
   return arr;
 }
 
+const drawBubble = (
+  ctx: CanvasRenderingContext2D,
+  bubble: Bubble,
+  now: number
+): boolean => {
+  const elapsed = now - bubble.start;
+  if (elapsed > BUBBLE_LIFETIME) return false;
+
+  const t = elapsed / BUBBLE_LIFETIME;
+  const alpha = 1 - t;
+
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.6;
+  ctx.fillStyle = BUBBLE_COLOR;
+  ctx.beginPath();
+  ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // Update bubble position
+  bubble.y -= bubble.speed;
+
+  return true;
+};
+
 const Ocean = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ripples = useRef<Ripple[]>([]);
+  const bubbles = useRef<Bubble[]>([]);
   const animationRef = useRef<number>();
+  const bubbleAnimationRef = useRef<number>();
   const sizeRef = useRef<Size>({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -92,7 +135,72 @@ const Ocean = () => {
     return () => canvas.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Animation loop
+  // Separate bubble animation loop
+  useEffect(() => {
+    const spawnBubble = (width: number, height: number) => {
+      if (Math.random() < BUBBLE_SPAWN_RATE) {
+        const radius =
+          BUBBLE_MIN_RADIUS +
+          Math.random() * (BUBBLE_MAX_RADIUS - BUBBLE_MIN_RADIUS);
+        const newBubble = {
+          x: Math.random() * width,
+          y: height + radius,
+          radius,
+          start: performance.now(),
+          speed: BUBBLE_RISE_SPEED * (0.5 + Math.random() * 0.5),
+        };
+        bubbles.current.push(newBubble);
+        console.log("Spawned bubble:", newBubble);
+      }
+    };
+
+    const animateBubbles = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        console.log("No canvas found");
+        return;
+      }
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        console.log("No context found");
+        return;
+      }
+
+      const { width, height } = sizeRef.current;
+
+      // Spawn and update bubbles
+      spawnBubble(width, height);
+
+      // Draw all bubbles
+      bubbles.current = bubbles.current.filter((bubble) => {
+        const isAlive = drawBubble(ctx, bubble, performance.now());
+        if (!isAlive) {
+          console.log("Bubble expired");
+        }
+        return isAlive;
+      });
+
+      // Log bubble count every second
+      if (Math.random() < 0.01) {
+        console.log("Current bubble count:", bubbles.current.length);
+      }
+
+      bubbleAnimationRef.current = requestAnimationFrame(animateBubbles);
+    };
+
+    // Start the bubble animation immediately
+    console.log("Starting bubble animation");
+    bubbleAnimationRef.current = requestAnimationFrame(animateBubbles);
+    return () => {
+      if (bubbleAnimationRef.current) {
+        console.log("Cleaning up bubble animation");
+        cancelAnimationFrame(bubbleAnimationRef.current);
+      }
+    };
+  }, []);
+
+  // Main animation loop for ocean and ripples
   useEffect(() => {
     const drawOcean = (
       ctx: CanvasRenderingContext2D,
@@ -147,10 +255,19 @@ const Ocean = () => {
       const { width, height } = sizeRef.current;
       ctx.clearRect(0, 0, width, height);
       drawOcean(ctx, width, height);
+
       const now = performance.now();
+
+      // Update and draw ripples
       ripples.current = ripples.current.filter((ripple) =>
         drawRipple(ctx, ripple, now)
       );
+
+      // Draw bubbles in the main loop as well to ensure they're visible
+      bubbles.current.forEach((bubble) => {
+        drawBubble(ctx, bubble, now);
+      });
+
       animationRef.current = requestAnimationFrame(animate);
     };
     animationRef.current = requestAnimationFrame(animate);
