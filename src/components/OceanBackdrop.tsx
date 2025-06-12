@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 
 const OCEAN_COLOR_TOP = "#4ec6e8";
 const OCEAN_COLOR_BOTTOM = "#b3e0e6";
