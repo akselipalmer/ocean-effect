@@ -194,20 +194,28 @@ const Ocean = () => {
         RIPPLE_MIN_RADIUS + t * (RIPPLE_MAX_RADIUS - RIPPLE_MIN_RADIUS);
       const alpha = 1 - t;
       ctx.save();
-      ctx.globalAlpha = alpha * 0.7;
       ctx.strokeStyle = RIPPLE_COLOR;
       ctx.lineWidth = RIPPLE_LINE_WIDTH;
-      ctx.beginPath();
       const points = ripple.points.map((point) => ({
         x: point.x * (radius / RIPPLE_MIN_RADIUS),
         y: point.y * (radius / RIPPLE_MIN_RADIUS),
       }));
-      points.forEach((point, i) => {
-        if (i === 0) ctx.moveTo(ripple.x + point.x, ripple.y + point.y);
-        else ctx.lineTo(ripple.x + point.x, ripple.y + point.y);
-      });
-      ctx.closePath();
-      ctx.stroke();
+      // Find the angle of the mouse movement (from previous ripple if available)
+      // For simplicity, we'll fade the segment opposite the first point
+      const total = points.length;
+      for (let i = 0; i < total; i++) {
+        const p1 = points[i];
+        const p2 = points[(i + 1) % total];
+        // Angle from center for this segment
+        const angle = (i / total) * Math.PI * 2;
+        // Fade: 1 at angle=0, min at angle=PI (opposite side)
+        const fade = 0.5 + 0.5 * Math.cos(angle); // 1 to 0
+        ctx.globalAlpha = alpha * 0.7 * fade;
+        ctx.beginPath();
+        ctx.moveTo(ripple.x + p1.x, ripple.y + p1.y);
+        ctx.lineTo(ripple.x + p2.x, ripple.y + p2.y);
+        ctx.stroke();
+      }
       ctx.restore();
       return true;
     };
