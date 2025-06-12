@@ -1,10 +1,10 @@
 import "./App.css";
-import Mouse from "./Mouse/Mouse";
+import OceanBackdrop from "./components/OceanBackdrop.tsx";
 
 function App() {
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      <Mouse />
+      <OceanBackdrop />
     </div>
   );
 }
