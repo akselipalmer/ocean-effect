@@ -10,12 +10,45 @@ A modern web application that creates stunning ocean-like visual effects using F
 - Smooth transitions and effects
 - Modern and clean interface
 
+## 📸 Preview
+
+<div align="center">
+  <img src="preview/desktop-view.png" alt="Desktop View" width="800"/>
+  <br/>
+  <em>Desktop view of Ocean Effect</em>
+</div>
+
+<div align="center">
+  <img src="preview/mobile-view.png" alt="Mobile View" width="400"/>
+  <br/>
+  <em>Mobile view of Ocean Effect</em>
+</div>
+
+## 🎮 Live Demo
+
+### 👉 [**TRY IT NOW: Ocean Effect Demo**](https://ocean-effect.vercel.app/) 👈
+
+Experience the beautiful ocean animations in your browser! Click the link above to see it in action.
+
 ## 🛠️ Tech Stack
 
-- [Framer Motion](https://www.framer.com/motion/) - For smooth animations and transitions
-- [Joy UI](https://mui.com/joy-ui/getting-started/) - For modern UI components
-- React - Frontend framework
-- TypeScript - For type safety and better development experience
+- **React** - Frontend framework for building the user interface
+- **TypeScript** - For type safety and better development experience
+- **Canvas API** - For high-performance 2D graphics rendering
+  - Custom ocean wave animations
+  - Interactive ripple effects
+  - Dynamic surface rings
+- **React Hooks**
+  - `useRef` - For managing canvas references and animation frames
+  - `useEffect` - For handling animations, event listeners, and cleanup
+- **Performance Optimizations**
+  - RequestAnimationFrame for smooth animations
+  - Throttled ripple generation
+  - Efficient canvas rendering techniques
+- **Responsive Design**
+  - Dynamic canvas resizing
+  - Touch and mouse event support
+  - Adaptive layout for all screen sizes
 
 ## 🚀 Getting Started
 
