@@ -115,14 +115,9 @@ const Ocean = () => {
 
   // Mouse move handler
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointer = (x: number, y: number) => {
       mouseMoveCount.current++;
       if (mouseMoveCount.current % RIPPLE_SPAWN_THROTTLE !== 0) return;
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
       let movementAngle = 0;
       if (prevMouse.current) {
         const dx = x - prevMouse.current.x;
@@ -138,11 +133,36 @@ const Ocean = () => {
         movementAngle,
       });
     };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      handlePointer(x, y);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      if (e.touches.length === 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.touches[0].clientX - rect.left;
+      const y = e.touches[0].clientY - rect.top;
+      handlePointer(x, y);
+    };
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     canvas.addEventListener("mousemove", handleMouseMove);
-    return () => canvas.removeEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    return () => {
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("touchmove", handleTouchMove);
+    };
   }, []);
 
   // Surface ring animation loop
